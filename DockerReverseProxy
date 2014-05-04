@@ -1,0 +1,51 @@
+#Run the latest version of linux ubuntu
+FROM ubuntu
+
+MAINTAINER Adam Carrick, adam.carrick@gmail.com
+
+#Update Apt
+RUN apt-get update
+RUN apt-get -y upgrade
+
+#Install web server
+RUN apt-get install -y apache2
+
+#Install build tools needed for reverse proxy
+
+RUN apt-get install -y build-essential
+
+#Install reverse proxy for apache
+RUN apt-get install -y libapache2-mod-proxy-html libxml2-dev
+
+#Config reverse proxy
+RUN a2enmod proxy
+RUN a2enmod proxy_http
+RUN a2enmod proxy_ajp
+RUN a2enmod rewrite
+RUN a2enmod deflate
+RUN a2enmod headers
+RUN a2enmod proxy_balancer
+RUN a2enmod proxy_connect
+RUN a2enmod proxy_html
+
+#Put address of the web host in the proxy config
+#TODO Figure out how to put that address in there
+
+#RUN echo "<VirtualHost *:*>
+#	ProxyPreserveHost On
+#	ProxyPass / http://0.0.0.0:8080/
+#	ProxyPassReverse / http://0.0.0.0:8080/
+#	SeverName localhost
+#</VirtualHost>
+#" >>
+
+RUN echo /etc/apache2/sites-enabled/000-default.conf
+
+#Dont even know if this will work 
+
+EXPOSE 80
+EXPOSE 8080
+
+#Restart the server
+
+RUN service apache2 restart 
